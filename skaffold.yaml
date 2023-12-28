@@ -1,0 +1,52 @@
+apiVersion: skaffold/v4beta8
+kind: Config
+deploy:
+  kubectl:
+    remoteManifests:
+      - ./infra/k8s/*
+metadata:
+  name: photo-gallery
+build:
+  local:
+    push: false
+  artifacts:
+    - image: itsmefrost/event-bus
+      context: Event-Bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: itsmefrost/storage-mgmt-serv
+      context: StorageMgmtServ
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: itsmefrost/usage-mntr-serv
+      context: UsageMntrServ
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: itsmefrost/user-acc-mgmt-serv
+      context: UserAccMgmtServ
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+manifests:
+  rawYaml:
+    - infra/k8s/event-bus-depl.yaml
+    - infra/k8s/ingress-serv.yaml
+    - infra/k8s/log-serv-depl.yaml
+    - infra/k8s/storage-mgmt-serv-depl.yaml
+    - infra/k8s/usage-mntr-serv-depl.yaml
+    - infra/k8s/user-acc-mgmt-serv-depl.yaml

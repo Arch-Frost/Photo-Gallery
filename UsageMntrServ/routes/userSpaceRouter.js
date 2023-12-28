@@ -132,6 +132,7 @@ router.get("/getUserStorage/:userId/", async (req, res) => {
         userId,
         usedSpace: currentUser.usedSpace,
         availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
+        dailyBandwidth: currentUser.dailyBandwidth,
       },
     };
     res.status(200).json(response);

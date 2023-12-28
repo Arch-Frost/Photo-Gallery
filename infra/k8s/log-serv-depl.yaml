@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-serv-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-serv
+  template:
+    metadata:
+      labels:
+        app: log-serv
+    spec:
+      containers:
+        - name: log-serv
+          image: itsmefrost/log-serv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: log-serv
+spec:
+  selector:
+    app: log-serv
+  ports:
+    - name: log-serv
+      protocol: TCP
+      port: 5004
+      targetPort: 5004

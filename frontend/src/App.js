@@ -5,6 +5,7 @@ import Nav from "./components/Nav";
 import Register from "./components/Register";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./homepage/HomePage";
 function App() {
   return (
   <>
@@ -12,7 +13,8 @@ function App() {
     <Nav/>
     <Routes>
       <Route path="/register" element={<Register/>}/>
-      <Route path="/" element={<Login/>}/>
+      <Route path="/login" element={<Login/>}/>
+      <Route path="/" element={<HomePage/>}/>
       <Route path="/drive" element={<Drive/>}/>
     </Routes>
   </Router>

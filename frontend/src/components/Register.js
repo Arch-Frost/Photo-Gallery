@@ -37,13 +37,13 @@ export default function Register() {
   return (
     <div className="mt-36 p-3">
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
-        <h1 className="font-bold text-2xl mb-4 text-center">Regitser</h1>
+        <h1 className="font-bold text-2xl mb-4 text-center">Register</h1>
         <div className="mb-5">
           <label
             htmlFor="name"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            username
+            Username
           </label>
           <input
             type="text"

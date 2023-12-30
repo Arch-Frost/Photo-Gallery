@@ -4,19 +4,13 @@ metadata:
   name: ingress-serv
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 25m
 spec:
   ingressClassName: nginx
   rules:
     - host: photo-gallery.com
       http:
         paths:
-        - path: /
-          pathType: ImplementationSpecific
-          backend:
-            service:
-              name: frontend-serv
-              port:
-                number: 3000
         - path: /register
           pathType: ImplementationSpecific
           backend:
@@ -59,3 +53,17 @@ spec:
               name: usage-mntr-serv
               port:
                 number: 5002
+        - path: /images.png
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: frontend-serv
+              port:
+                number: 3000
+        - path: /?(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: frontend-serv
+              port:
+                number: 3000

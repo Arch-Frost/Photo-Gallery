@@ -34,7 +34,7 @@ export default function Drive() {
 
             const {error} = await toast.promise(response, {
                 loading: 'Uploading image...',
-                success: 'Image uploaded successfully',
+                success: response.data.message,
                 error: (err)=>err.response.data.message,
             }
             )

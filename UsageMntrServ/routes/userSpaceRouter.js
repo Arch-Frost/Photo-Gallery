@@ -49,21 +49,35 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
           availableBandwidth: MAX_DAILY_BANDWIDTH - currentUser.dailyBandwidth,
         },
       };
-      res.status(403).json(response); 
+      res.status(403).json(response);
       return;
     }
 
     // Check if the user has enough space to upload the image
     const newUsedSpace = Number(currentUser.usedSpace) + Number(imageSize);
 
-    if (newUsedSpace > 0.8 * MAX_SPACE_LIMIT) { // If the user has exceeded 80% of the storage limit
+    if (newUsedSpace > 0.8 * MAX_SPACE_LIMIT) {
+      // If the user has exceeded 80% of the storage limit
       console.log(
         `Alert: User with ID ${userId} has exceeded 80% of the storage limit.`
       );
       // You can implement your alert mechanism here (e.g., send an email, notification, etc.)
+      response = {
+        status: "warning",
+        code: 199,
+        message: "Warning: User has exceeded 80% of the storage limit.",
+        data: {
+          userId,
+          usedSpace: currentUser.usedSpace,
+          availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
+        },
+      };
+      res.status(200).json(response);
+      return;
     }
 
-    if (newUsedSpace > MAX_SPACE_LIMIT) { // If the user has exceeded the storage limit
+    if (newUsedSpace > MAX_SPACE_LIMIT) {
+      // If the user has exceeded the storage limit
       console.log(`User with ID ${userId} has exceeded the storage limit.`);
       response = {
         status: "error",
@@ -90,8 +104,8 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
       },
     };
     res.status(200).json(response);
-
-  } catch (error) { // Catch any errors
+  } catch (error) {
+    // Catch any errors
     console.error(error);
     response = {
       status: "error",
@@ -107,7 +121,8 @@ router.get("/getUserStorage/:userId/", async (req, res) => {
   try {
     const { userId } = req.params;
 
-    if (!userId) { // If the userId is not provided
+    if (!userId) {
+      // If the userId is not provided
       response = {
         status: "error",
         code: 400,
@@ -118,7 +133,8 @@ router.get("/getUserStorage/:userId/", async (req, res) => {
 
     let currentUser = await UserSpace.findOne({ userId });
 
-    if (!currentUser) { // If the user does not exist
+    if (!currentUser) {
+      // If the user does not exist
       currentUser = new UserSpace({ userId });
       await currentUser.save();
     }
@@ -136,8 +152,8 @@ router.get("/getUserStorage/:userId/", async (req, res) => {
       },
     };
     res.status(200).json(response);
-
-  } catch (error) { // Catch any errors
+  } catch (error) {
+    // Catch any errors
     console.error(error);
     response = {
       status: "error",

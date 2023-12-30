@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
       message: "UserAccMgmtServ: User registered with email " + email,
       code: 201,
     }).then((res) => {
-      console.log("Logs saved successfully");
+      // console.log("Logs saved successfully");
     }).catch((err) => {
       console.log("Error saving logs: " + err);
     });
@@ -39,7 +39,7 @@ router.post('/register', async (req, res) => {
       message: "UserAccMgmtServ: User registration failed with error " + error.message,
       code: 500,
     }).then((res) => {
-      console.log("Logs saved successfully");
+      // console.log("Logs saved successfully");
     }).catch((err) => {
       console.log("Error saving logs: " + err);
     });
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
         message: "UserAccMgmtServ: User logged in with email " + email,
         code: 200,
       }).then((res) => {
-        console.log("Logs saved successfully");
+        // console.log("Logs saved successfully: " + res.status);
       }).catch((err) => {
         console.log("Error saving logs: " + err);
       });
@@ -92,7 +92,7 @@ router.post('/login', async (req, res) => {
         message: "UserAccMgmtServ: User login failed due to invalid credentials with email " + email,
         code: 401,
       }).then((res) => {
-        console.log("Logs saved successfully");
+        // console.log("Logs saved successfully: " + res.status);
       }).catch((err) => {
         console.log("Error saving logs: " + err);
       });
@@ -108,7 +108,7 @@ router.post('/login', async (req, res) => {
       message: "UserAccMgmtServ: User login failed with error " + error.message,
       code: 500,
     }).then((res) => {
-      console.log("Logs saved successfully");
+      // console.log("Logs saved successfully: " + res.status);
     }).catch((err) => {
       console.log("Error saving logs: " + err);
     });

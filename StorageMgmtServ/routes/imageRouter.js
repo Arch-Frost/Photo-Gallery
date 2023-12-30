@@ -20,14 +20,14 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
     const base64Image = buffer.toString("base64");
 
     // Check whether the user has enough space to upload the image
-    const canUpload = await canUploadImage(userId, buffer.length);
+    const { canUpload, code } = await canUploadImage(userId, buffer.length);
 
     if (!canUpload) {
       response = {
         status: "fail",
         code: 400,
         message:
-          "Bad Request. User does not have enough space to upload the image",
+          "User does not have enough space to upload the image",
       };
       await axios
         .post(process.env.LOG_SERV_URL, {
@@ -36,7 +36,7 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
           code: 400,
         })
         .then((res) => {
-          console.log("Logs saved successfully");
+          // console.log("Logs saved successfully");
         })
         .catch((err) => {
           console.log("Error saving logs: " + err);
@@ -56,12 +56,21 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
     // Save the image to the database
     await newImage.save();
 
-    response = {
-      status: "success",
-      code: 201,
-      message: "Image uploaded successfully",
-      data: newImage,
-    };
+    if (code === 199) {
+      response = {
+        status: "warning",
+        code: 201,
+        message:
+          "Warning: User has exceeded 80% of the storage limit",
+      }
+    } else {
+          response = {
+            status: "success",
+            code: 201,
+            message: "Image uploaded successfully",
+            data: newImage,
+          };
+    }
 
     await axios
       .post(process.env.LOG_SERV_URL, {
@@ -69,7 +78,7 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
         code: 201,
       })
       .then((res) => {
-        console.log("Logs saved successfully");
+        // console.log("Logs saved successfully");
       })
       .catch((err) => {
         console.log("Error saving logs: " + err);
@@ -107,7 +116,7 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
         code: 500,
       })
       .then((res) => {
-        console.log("Logs saved successfully");
+        // console.log("Logs saved successfully");
       })
       .catch((err) => {
         console.log("Error saving logs: " + err);
@@ -134,7 +143,7 @@ router.get("/images/:userId", async (req, res) => {
           code: 400,
         })
         .then((res) => {
-          console.log("Logs saved successfully");
+          // console.log("Logs saved successfully");
         })
         .catch((err) => {
           console.log("Error saving logs: " + err);
@@ -152,10 +161,17 @@ router.get("/images/:userId", async (req, res) => {
       data: images,
     };
 
-    await axios.post(process.env.LOG_SERV_URL, {
-      message: "StorageMgmtServ: Images retrieved successfully",
-      code: 200,
-    });
+    await axios
+      .post(process.env.LOG_SERV_URL, {
+        message: "StorageMgmtServ: Images retrieved successfully",
+        code: 200,
+      })
+      .then((res) => {
+        // console.log("Logs saved successfully");
+      })
+      .catch((err) => {
+        console.log("Error saving logs: " + err);
+      });
 
     res.status(200).json(response);
   } catch (error) {
@@ -165,10 +181,18 @@ router.get("/images/:userId", async (req, res) => {
       code: 500,
       message: "Internal Server Error. Error in get images endpoint",
     };
-    await axios.post(process.env.LOG_SERV_URL, {
-      message: "StorageMgmtServ: Internal Server Error. Error in get images endpoint",
-      code: 500,
-    });
+    await axios
+      .post(process.env.LOG_SERV_URL, {
+        message:
+          "StorageMgmtServ: Internal Server Error. Error in get images endpoint",
+        code: 500,
+      })
+      .then((res) => {
+        // console.log("Logs saved successfully");
+      })
+      .catch((err) => {
+        console.log("Error saving logs: " + err);
+      });
     res.status(500).json(response);
   }
 });
@@ -209,6 +233,11 @@ router.delete("/images/delete/", async (req, res) => {
     await axios.post(process.env.LOG_SERV_URL, {
       message: "StorageMgmtServ: Image deleted successfully",
       code: 200,
+    }).then((res) => {
+      // console.log("Logs saved successfully");
+    }
+    ).catch((err) => {
+      console.log("Error saving logs: " + err);
     });
 
     await axios
@@ -236,7 +265,8 @@ router.delete("/images/delete/", async (req, res) => {
       message: "Internal Server Error. Error in delete image endpoint",
     };
     await axios.post(process.env.LOG_SERV_URL, {
-      message: "StorageMgmtServ: Internal Server Error. Error in delete image endpoint",
+      message:
+        "StorageMgmtServ: Internal Server Error. Error in delete image endpoint",
       code: 500,
     });
     res.status(500).json(response);
@@ -267,9 +297,11 @@ async function canUploadImage(userId, imageSize) {
     })
     .catch((error) => {
       // console.log(error.data.code);
-      return false;
+      return { canUpload: false, code: 403 };
     });
-  return request.code == 200;
+
+  return { canUpload: request.code === 200, code: request.code};
+  
 }
 
 module.exports = router;

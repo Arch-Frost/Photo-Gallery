@@ -2,13 +2,15 @@ require("dotenv").config()
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const uploadRoutes = require("./routes/imageRouter");
-
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "25mb" }));
+app.use(bodyParser.urlencoded({ limit: "25mb", extended: true }));
+
+const uploadRoutes = require("./routes/imageRouter");
 app.use('/', uploadRoutes);
+
 
 const port = process.env.PORT || 5001;
 

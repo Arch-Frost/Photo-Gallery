@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -13,17 +14,19 @@ export default function Register() {
     try {
       // Make a POST request to your server for registration
       const response = await axios.post(
-        "http://photogallery.com/user/register",
+        `${process.env.REACT_APP_USER_ACC_MGMT_SERV_URL}/register`,
         {
-          name,
+          username: name,
           email,
           password,
         }
       );
       console.log(response);
+      toast.success("Registration successful");
 
-      navigate("/");
+      navigate("/login");
     } catch (error) {
+      toast.success("Registration failed");
       console.error(
         "Registration failed:",
         error.response ? error.response.data : error.message
@@ -32,15 +35,15 @@ export default function Register() {
   };
 
   return (
-    <div className="mt-48">
+    <div className="mt-36 p-3">
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
-        <h1 className="font-bold text-2xl mb-4 text-center">Regitser</h1>
+        <h1 className="font-bold text-2xl mb-4 text-center">Register</h1>
         <div className="mb-5">
           <label
             htmlFor="name"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Name
+            Username
           </label>
           <input
             type="text"
@@ -48,7 +51,7 @@ export default function Register() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-            placeholder="Your Name"
+            placeholder="Your username"
             required
           />
         </div>
@@ -88,7 +91,7 @@ export default function Register() {
 
         <button
           type="submit"
-          className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="text-white bg-[#fb9e55] hover:bg-yellow-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Submit
         </button>

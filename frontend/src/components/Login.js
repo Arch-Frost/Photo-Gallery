@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/auth';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ export default function Login() {
 
     try {
       // Make a POST request to your server for registration
-      const response = await axios.post('http://photogallery.com/user/login', {
+      const response = await axios.post(process.env.REACT_APP_USER_ACC_MGMT_SERV_URL + "/login", {
         email,
         password,
       });
@@ -24,11 +25,12 @@ export default function Login() {
 
     } catch (error) {
       console.error('Login failed:', error.response ? error.response.data : error.message);
+      toast.error("Login failed")
     }
   };
 
   return (
-    <div className='mt-48'>
+    <div className='mt-36 p-3'>
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
         <h1 className='font-bold text-2xl mb-4 text-center'>Login</h1>
         <div className="mb-5">
@@ -61,7 +63,7 @@ export default function Login() {
 
         <button
           type="submit"
-          className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="text-white w-full bg-[#fb9e55]  hover:bg-yellow-700 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Submit
         </button>

@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     
-    const authData = JSON.parse(localStorage.getItem("hamza_auth"));
+    const authData = JSON.parse(localStorage.getItem("asad_auth"));
     if (authData) {
       setUser(authData);
     }
@@ -15,12 +15,12 @@ export const AuthProvider = ({ children }) => {
   const login = (user) => {
     setUser(user);
 
-    localStorage.setItem("hamza_auth", JSON.stringify(user));
+    localStorage.setItem("asad_auth", JSON.stringify(user));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("hamza_auth");
+    localStorage.removeItem("asad_auth");
   };
 
   return (

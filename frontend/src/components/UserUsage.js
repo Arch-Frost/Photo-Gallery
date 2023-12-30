@@ -9,11 +9,10 @@ export default function UserUsage({updateUI}) {
     const auth = useAuth()
 
     const fetchUsage = ()=>{
-        axios.get(`http://photogallery.com/api/usage/user/${auth.user?._id}`)
+        axios.get(`${process.env.REACT_APP_USAGE_SERV}/getUserStorage/${auth.user?._id}`)
         .then((res)=>{
-            setUsage(convertBytes(res.data?.data.totalUsage))
-            setPercentage(getPercentageStorage(res.data?.data.totalUsage, 26214400).toFixed(2))
-
+            setUsage(convertBytes(res.data?.data.dailyBandwidth))
+            setPercentage(getPercentageStorage(res.data?.data.dailyBandwidth, 26214400).toFixed(2))
         })
         .catch((err)=>{
             console.log(err)
@@ -26,13 +25,13 @@ export default function UserUsage({updateUI}) {
 
   return (
     <>
-      <div className="p-3 border border-gray-400 mb-4 w-1/2 mr-3">
+      <div className="p-3 border rounded border-gray-400 mb-4 w-full mr-3 md:w-1/2">
       <div className="flex">
         <p>Daily Usage</p>
         <p className="ml-auto">{usage?usage:0} Used of 25MB</p>
         </div>
         <div class="w-full bg-gray-200 mt-2 rounded-full h-2.5 dark:bg-gray-700">
-          <div class="bg-blue-600 h-2.5 rounded-full" style={{width: `${percentage?percentage:0}%`}}></div>
+          <div class="bg-[#fb9e55] h-2.5 rounded-full" style={{width: `${percentage?percentage:0}%`}}></div>
         </div>
       </div>
     </>

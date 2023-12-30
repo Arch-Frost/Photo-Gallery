@@ -14,9 +14,9 @@ spec:
           pathType: ImplementationSpecific
           backend:
             service:
-              name: user-acc-mgmt-serv
+              name: frontend-serv
               port:
-                number: 5000
+                number: 3000
         - path: /register
           pathType: ImplementationSpecific
           backend:
@@ -31,4 +31,31 @@ spec:
               name: user-acc-mgmt-serv
               port:
                 number: 5000
-        
+        - path: /images/upload
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: storage-mgmt-serv
+              port:
+                number: 5001
+        - path: /images/?(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: storage-mgmt-serv
+              port:
+                number: 5001
+        - path: /images/delete
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: storage-mgmt-serv
+              port:
+                number: 5001
+        - path: /getUserStorage/?(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: usage-mntr-serv
+              port:
+                number: 5002

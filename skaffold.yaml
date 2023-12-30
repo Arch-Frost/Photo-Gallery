@@ -42,6 +42,14 @@ build:
         manual:
           - src: "*.js"
             dest: .
+    - image: itsmefrost/frontend-serv
+      context: frontend
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.js"
+            dest: .
 manifests:
   rawYaml:
     - infra/k8s/event-bus-depl.yaml
@@ -50,3 +58,4 @@ manifests:
     - infra/k8s/storage-mgmt-serv-depl.yaml
     - infra/k8s/usage-mntr-serv-depl.yaml
     - infra/k8s/user-acc-mgmt-serv-depl.yaml
+    - infra/k8s/frontend-depl.yaml

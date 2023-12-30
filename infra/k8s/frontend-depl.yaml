@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-serv-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-serv
+  template:
+    metadata:
+      labels:
+        app: frontend-serv
+    spec:
+      containers:
+        - name: frontend-serv
+          image: itsmefrost/frontend-serv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-serv
+spec:
+  selector:
+    app: frontend-serv
+  ports:
+    - name: frontend-serv
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

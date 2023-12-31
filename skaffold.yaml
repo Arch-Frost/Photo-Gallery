@@ -7,48 +7,58 @@ deploy:
 metadata:
   name: photo-gallery
 build:
-  local:
-    push: false
+  # local:
+  #   push: false
+  googleCloudBuild:
+    projectId: photo-gallery-409812
   artifacts:
-    - image: itsmefrost/event-bus
+    - image: us.gcr.io/photo-gallery-409812/event-bus
       context: Event-Bus
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "*.js"
+          - src: "**/*.js"
             dest: .
-    - image: itsmefrost/storage-mgmt-serv
+    - image: us.gcr.io/photo-gallery-409812/storagemgmtserv
       context: StorageMgmtServ
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "*.js"
+          - src: "**/*.js"
             dest: .
-    - image: itsmefrost/usage-mntr-serv
+    - image: us.gcr.io/photo-gallery-409812/usagemntrserv
       context: UsageMntrServ
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "*.js"
+          - src: "**/*.js"
             dest: .
-    - image: itsmefrost/user-acc-mgmt-serv
+    - image: us.gcr.io/photo-gallery-409812/useraccmgmtserv
       context: UserAccMgmtServ
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "*.js"
+          - src: "**/*.js"
             dest: .
-    - image: itsmefrost/frontend-serv
+    - image: us.gcr.io/photo-gallery-409812/frontend
       context: frontend
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
           - src: "src/**/*.js"
+            dest: .
+    - image: us.gcr.io/photo-gallery-409812/logserv
+      context: LogServ
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "**/*.js"
             dest: .
 manifests:
   rawYaml:

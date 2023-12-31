@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const cron = require('node-cron');
 
 const UserSpace = require("../model/UserSpace");
 
@@ -8,6 +9,20 @@ const MAX_SPACE_LIMIT = MAX_STORAGE_LIMIT_MB * 1024 * 1024; // Convert MB to byt
 
 const MAX_DAILY_BANDWIDTH_MB = 25;
 const MAX_DAILY_BANDWIDTH = MAX_DAILY_BANDWIDTH_MB * 1024 * 1024; // Convert MB to bytes
+
+
+// Schedule task to run at midnight
+cron.schedule("0 0 * * *", async function () {
+  // Get all users
+  const users = await UserSpace.find({});
+
+  // Reset daily bandwidth for each user
+  users.forEach(async (user) => {
+    user.dailyBandwidth = 0;
+    await user.save();
+    console.log("Reset daily bandwidth for user " + user.userId);
+  });
+});
 
 // Endpoint to check whether a user has enough space to upload an image
 router.post("/canUploadImage/:userId/", async (req, res) => {
@@ -56,26 +71,6 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
     // Check if the user has enough space to upload the image
     const newUsedSpace = Number(currentUser.usedSpace) + Number(imageSize);
 
-    if (newUsedSpace > 0.8 * MAX_SPACE_LIMIT) {
-      // If the user has exceeded 80% of the storage limit
-      console.log(
-        `Alert: User with ID ${userId} has exceeded 80% of the storage limit.`
-      );
-      // You can implement your alert mechanism here (e.g., send an email, notification, etc.)
-      response = {
-        status: "warning",
-        code: 199,
-        message: "Warning: User has exceeded 80% of the storage limit.",
-        data: {
-          userId,
-          usedSpace: currentUser.usedSpace,
-          availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
-        },
-      };
-      res.status(200).json(response);
-      return;
-    }
-
     if (newUsedSpace > MAX_SPACE_LIMIT) {
       // If the user has exceeded the storage limit
       console.log(`User with ID ${userId} has exceeded the storage limit.`);
@@ -90,6 +85,26 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
         },
       };
       res.status(403).json(response);
+      return;
+    }
+
+    if (newUsedSpace > 0.8 * MAX_SPACE_LIMIT) {
+      // If the user has exceeded 80% of the storage limit
+      console.log(
+        `Alert: User with ID ${userId} has exceeded 80% of the storage limit.`
+      );
+      // You can implement your alert mechanism here (e.g., send an email, notification, etc.)
+      response = {
+        status: "warning",
+        code: 200,
+        message: "Warning: User has exceeded 80% of the storage limit.",
+        data: {
+          userId,
+          usedSpace: currentUser.usedSpace,
+          availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
+        },
+      };
+      res.status(200).json(response);
       return;
     }
 

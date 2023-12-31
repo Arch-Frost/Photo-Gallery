@@ -27,12 +27,11 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
         status: "fail",
         code: 400,
         message:
-          "User does not have enough space to upload the image",
+          "User has exceeded the storage limit. Please try again tomorrow!",
       };
       await axios
         .post(process.env.LOG_SERV_URL, {
-          message:
-            "StorageMgmtServ: User does not have enough space to upload the image",
+          message: "StorageMgmtServ: User has exceeded the storage limit.",
           code: 400,
         })
         .then((res) => {
@@ -56,20 +55,20 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
     // Save the image to the database
     await newImage.save();
 
-    if (code === 199) {
+    if (code == 199) {
       response = {
         status: "warning",
         code: 201,
-        message:
-          "Warning: User has exceeded 80% of the storage limit",
-      }
+        message: "Warning: User has exceeded 80% of the storage limit!",
+        data: newImage,
+      };
     } else {
-          response = {
-            status: "success",
-            code: 201,
-            message: "Image uploaded successfully",
-            data: newImage,
-          };
+      response = {
+        status: "success",
+        code: 201,
+        message: "Image uploaded successfully!",
+        data: newImage,
+      };
     }
 
     await axios
@@ -230,15 +229,17 @@ router.delete("/images/delete/", async (req, res) => {
       message: "Image deleted successfully",
     };
 
-    await axios.post(process.env.LOG_SERV_URL, {
-      message: "StorageMgmtServ: Image deleted successfully",
-      code: 200,
-    }).then((res) => {
-      // console.log("Logs saved successfully");
-    }
-    ).catch((err) => {
-      console.log("Error saving logs: " + err);
-    });
+    await axios
+      .post(process.env.LOG_SERV_URL, {
+        message: "StorageMgmtServ: Image deleted successfully",
+        code: 200,
+      })
+      .then((res) => {
+        // console.log("Logs saved successfully");
+      })
+      .catch((err) => {
+        console.log("Error saving logs: " + err);
+      });
 
     await axios
       .post(process.env.EVENT_BUS_URL + "events/", {
@@ -300,8 +301,7 @@ async function canUploadImage(userId, imageSize) {
       return { canUpload: false, code: 403 };
     });
 
-  return { canUpload: request.code === 200, code: request.code};
-  
+  return { canUpload: request.code === 200, code: request.code, message: request.message };
 }
 
 module.exports = router;

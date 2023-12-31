@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const bodyParser = require("body-parser");
-const cron = require("node-cron");
 const UserSpace = require("./model/UserSpace");
 const userSpaceRouter = require("./routes/userSpaceRouter");
 
@@ -13,18 +12,6 @@ app.use(bodyParser.json());
 app.use("/", userSpaceRouter);
 
 const port = process.env.PORT || 5002;
-
-// Schedule task to run at midnight
-cron.schedule('0 0 * * *', async function() {
-  // Get all users
-  const users = await UserSpace.find({});
-  
-  // Reset daily bandwidth for each user
-  users.forEach(async (user) => {
-    user.dailyBandwidth = 0;
-    await user.save();
-  });
-});
 
 // Update the daily bandwidth used by the user
 async function useDailyBandwidth(userId, bandwidth) {

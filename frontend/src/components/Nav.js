@@ -10,7 +10,17 @@ export default function Nav() {
     const logout = () => {
         auth.logout()
         navigate('/')
-        toast.success('Logged out successfully')
+        toast.success('Logged out successfully', {
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+          iconTheme: {
+            primary: '#00ff00',
+            secondary: '#fff',
+          },
+        })
     }
 
   return (

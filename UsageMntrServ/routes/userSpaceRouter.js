@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const cron = require('node-cron');
+const cron = require("node-cron");
 
 const UserSpace = require("../model/UserSpace");
 
@@ -9,7 +9,6 @@ const MAX_SPACE_LIMIT = MAX_STORAGE_LIMIT_MB * 1024 * 1024; // Convert MB to byt
 
 const MAX_DAILY_BANDWIDTH_MB = 25;
 const MAX_DAILY_BANDWIDTH = MAX_DAILY_BANDWIDTH_MB * 1024 * 1024; // Convert MB to bytes
-
 
 // Schedule task to run at midnight
 cron.schedule("0 0 * * *", async function () {
@@ -57,14 +56,15 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
       response = {
         status: "error",
         code: 429,
-        message: "User has exceeded the daily bandwidth limit. Please try again tommorrow.",
+        message:
+          "User has exceeded the daily bandwidth limit. Please try again tommorrow.",
         data: {
           userId,
           dailyBandwidth: currentUser.dailyBandwidth,
           availableBandwidth: MAX_DAILY_BANDWIDTH - currentUser.dailyBandwidth,
         },
       };
-      res.status(403).json(response);
+      res.json(response);
       return;
     }
 
@@ -84,7 +84,7 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
           availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
         },
       };
-      res.status(403).json(response);
+      res.json(response);
       return;
     }
 
@@ -104,7 +104,7 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
           availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
         },
       };
-      res.status(199).json(response);
+      res.json(response);
       return;
     } else {
       response = {
@@ -119,7 +119,6 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
       };
       res.status(200).json(response);
     }
-
   } catch (error) {
     // Catch any errors
     console.error(error);
@@ -128,7 +127,7 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
       code: 500,
       message: "Internal server error. Error with middleware function.",
     };
-    res.status(500).json(response);
+    res.json(response);
   }
 });
 

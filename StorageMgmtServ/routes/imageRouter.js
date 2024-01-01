@@ -64,7 +64,7 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
         });
       return res.status(400).json(response);
     }
-    
+
     // Create a new Image document
     const newImage = new Image({
       userId: userId, // Get the user id from the request body
@@ -107,19 +107,19 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
 
     // Broadcasting that the image is uploaded to all other services
     await axios
-    .post(process.env.EVENT_BUS_URL + "events/", {
-    type: "IMAGE_UPLOADED",
-    data: {
-    userId: req.body.userId,
-    imageSize: buffer.length,
-    },
-    })
-    .then((res) => {
-    console.log("Event bus responded with status " + res.status);
-    })
-    .catch((err) => {
-    console.log("Event bus responded with error " + err);
-    });
+      .post(process.env.EVENT_BUS_URL + "events/", {
+        type: "IMAGE_UPLOADED",
+        data: {
+          userId: req.body.userId,
+          imageSize: buffer.length,
+        },
+      })
+      .then((res) => {
+        console.log("Event bus responded with status " + res.status);
+      })
+      .catch((err) => {
+        console.log("Event bus responded with error " + err);
+      });
 
     // console.log(response);
     res.status(201).json(response);
@@ -318,18 +318,19 @@ async function canUploadImage(userId, imageSize) {
     .then((response) => {
       if (response.data.code == 199) {
         return { canUpload: true, code: 199, message: response.data.message };
-      } else {
+      } else if (response.data.code == 200) {
         return { canUpload: true, code: 200, message: response.data.message };
+      } else if (response.data.code == 403) {
+        return { canUpload: false, code: 403, message: response.data.message };
+      } else if (response.data.code == 429) {
+        return { canUpload: false, code: 429, message: response.data.message };
+      } else {
+        return { canUpload: false, code: 500, message: response.data.message };
       }
     })
     .catch((error) => {
       // console.log(error.data.code);
-      if (error.data.code == 403) {
-        return { canUpload: false, code: 403, message: error.data.message };
-      } else (error.data.code == 429)
-      {
-        return { canUpload: false, code: 429, message: error.data.message };
-      }
+      return { canUpload: false, code: 500, message: error.data.message };
     });
 
   return request;

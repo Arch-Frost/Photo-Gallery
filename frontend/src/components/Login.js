@@ -25,7 +25,17 @@ export default function Login() {
 
     } catch (error) {
       console.error('Login failed:', error.response ? error.response.data : error.message);
-      toast.error("Login failed")
+      toast.error("Login failed", {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+        iconTheme: {
+          primary: '#ff0000',
+          secondary: '#fff',
+        },
+      })
     }
   };
 

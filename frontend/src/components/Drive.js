@@ -19,7 +19,18 @@ export default function Drive() {
     if (isValidFiles) {
       handleUpload(file);
     } else {
-      toast.error("Please select a valid file");
+      // toast.error("Please select a valid file");
+      toast.error("Please select an image file", {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+        iconTheme: {
+          primary: "#ff0000",
+          secondary: "#fff",
+        },
+      });
     }
     event.target.value = null;
   };
@@ -47,13 +58,13 @@ export default function Drive() {
 
       const { error } = await toast.promise(response, {
         loading: "Uploading image...",
-        success: (response) => response.data.message,
+        success: (response) => {
+          setImages([...images, response.data.data]);
+          setUpdateUI(!updateUI);
+          return "Image uploaded successfully";
+        },
         error: (err) => err.response.data.message,
       });
-      if (!error) {
-        // setUpdateUI(!updateUI)
-        setImages([...images, response.data.data]);
-      }
     } catch (error) {
       console.log(error);
     }
@@ -119,6 +130,7 @@ export default function Drive() {
             url={image.image.data}
             image={image}
             setUpdateUI={setUpdateUI}
+            setImages={setImages}
           />
         ))}
       </div>

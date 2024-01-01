@@ -22,11 +22,31 @@ export default function Register() {
         }
       );
       console.log(response);
-      toast.success("Registration successful");
+      toast.success("Registration successful", {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+        iconTheme: {
+          primary: '#00ff00',
+          secondary: '#fff',
+        },
+      });
 
       navigate("/login");
     } catch (error) {
-      toast.success("Registration failed");
+      toast.success("Registration failed", {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+        iconTheme: {
+          primary: '#ff0000',
+          secondary: '#fff',
+        },
+      });
       console.error(
         "Registration failed:",
         error.response ? error.response.data : error.message

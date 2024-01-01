@@ -2,22 +2,27 @@ import axios from "axios";
 import React from "react";
 import toast from "react-hot-toast";
 
-export default function ImageCard({ url, image, setUpdateUI }) {
+export default function ImageCard({ url, image, setImages, setUpdateUI }) {
   console.log(image._id);
 
-  const deleteImage = () => {
-    axios
-      .delete(`${process.env.REACT_APP_IMAGE_SERV}/images/delete/`, {
+  const deleteImage = async () => {
+    const response = axios.delete(
+      `${process.env.REACT_APP_IMAGE_SERV}/images/delete/`,
+      {
         data: { imageId: image._id },
-      })
-      .then((res) => {
-        toast.success("image delete successfully.");
-        setUpdateUI((cur) => !cur);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("error in deleting image");
-      });
+      }
+    );
+
+    const { error } = await toast.promise(response, {
+      loading: "Deleting image...",
+      success: "Image deleted successfully",
+      error: "Error occured while deleting image!",
+    });
+
+    if (!error) {
+      setImages((prev) => prev.filter((img) => img._id !== image._id));
+      setUpdateUI((prev) => !prev);
+    }
   };
 
   console.log(url);

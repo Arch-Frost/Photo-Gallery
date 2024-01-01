@@ -56,7 +56,7 @@ export default function Drive() {
         formData
       );
 
-      const { error } = await toast.promise(response, {
+      await toast.promise(response, {
         loading: "Uploading image...",
         success: (response) => {
           setImages([...images, response.data.data]);

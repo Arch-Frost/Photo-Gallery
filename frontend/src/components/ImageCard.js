@@ -13,16 +13,15 @@ export default function ImageCard({ url, image, setImages, setUpdateUI }) {
       }
     );
 
-    const { error } = await toast.promise(response, {
-      loading: "Deleting image...",
-      success: "Image deleted successfully",
-      error: "Error occured while deleting image!",
+    await toast.promise(response, {
+      loading: "Deleting image",
+      success: (response) => {
+        setImages((prev) => prev.filter((img) => img._id !== image._id));
+        setUpdateUI((prev) => !prev);
+        return "Image deleted successfully";
+      },
+      error: (err) => err.response.data.message,
     });
-
-    if (!error) {
-      setImages((prev) => prev.filter((img) => img._id !== image._id));
-      setUpdateUI((prev) => !prev);
-    }
   };
 
   console.log(url);

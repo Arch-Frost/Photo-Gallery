@@ -15,6 +15,7 @@ spec:
       containers:
         - name: event-bus
           image: us.gcr.io/photo-gallery-409812/event-bus
+          # image: itsmefrost/event-bus
 ---
 apiVersion: v1
 kind: Service

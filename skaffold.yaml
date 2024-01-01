@@ -13,6 +13,7 @@ build:
     projectId: photo-gallery-409812
   artifacts:
     - image: us.gcr.io/photo-gallery-409812/event-bus
+    # - image: itsmefrost/event-bus
       context: Event-Bus
       docker:
         dockerfile: Dockerfile
@@ -21,6 +22,7 @@ build:
           - src: "**/*.js"
             dest: .
     - image: us.gcr.io/photo-gallery-409812/storagemgmtserv
+    # - image: itsmefrost/storagemgmtserv
       context: StorageMgmtServ
       docker:
         dockerfile: Dockerfile
@@ -29,6 +31,7 @@ build:
           - src: "**/*.js"
             dest: .
     - image: us.gcr.io/photo-gallery-409812/usagemntrserv
+    # - image: itsmefrost/usagemntrserv
       context: UsageMntrServ
       docker:
         dockerfile: Dockerfile
@@ -37,6 +40,7 @@ build:
           - src: "**/*.js"
             dest: .
     - image: us.gcr.io/photo-gallery-409812/useraccmgmtserv
+    # - image: itsmefrost/useraccmgmtserv
       context: UserAccMgmtServ
       docker:
         dockerfile: Dockerfile
@@ -45,6 +49,7 @@ build:
           - src: "**/*.js"
             dest: .
     - image: us.gcr.io/photo-gallery-409812/frontend
+    # - image: itsmefrost/frontend
       context: frontend
       docker:
         dockerfile: Dockerfile
@@ -53,6 +58,7 @@ build:
           - src: "src/**/*.js"
             dest: .
     - image: us.gcr.io/photo-gallery-409812/logserv
+    # - image: itsmefrost/logserv
       context: LogServ
       docker:
         dockerfile: Dockerfile

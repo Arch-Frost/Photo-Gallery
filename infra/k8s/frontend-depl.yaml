@@ -15,6 +15,7 @@ spec:
       containers:
         - name: frontend-serv
           image: us.gcr.io/photo-gallery-409812/frontend
+          # image: itsmefrost/frontend
 ---
 apiVersion: v1
 kind: Service

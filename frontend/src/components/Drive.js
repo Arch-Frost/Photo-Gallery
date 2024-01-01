@@ -34,13 +34,13 @@ export default function Drive() {
 
             const {error} = await toast.promise(response, {
                 loading: 'Uploading image...',
-                success: (response)=>response.response.data.message,
+                success: (response)=>response.data.message,
                 error: (err)=>err.response.data.message,
             }
             )
             if(!error){
                 setUpdateUI(!updateUI)
-            }
+                            }
 
         } catch (error) {
             console.log(error)
@@ -77,7 +77,7 @@ export default function Drive() {
                 </div>
             </div>
 
-            <div className='flex flex-col'>
+            <div className='flex flex-col flex-row'>
             <UserStorage updateUI={updateUI}/>
             <UserUsage updateUI={updateUI}/>
         </div>

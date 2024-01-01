@@ -15,6 +15,7 @@ spec:
       containers:
         - name: log-serv
           image: us.gcr.io/photo-gallery-409812/logserv
+          # image: itsmefrost/logserv
 ---
 apiVersion: v1
 kind: Service

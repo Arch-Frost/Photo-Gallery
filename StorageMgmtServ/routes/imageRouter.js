@@ -85,19 +85,19 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
 
     // Broadcasting that the image is uploaded to all other services
     await axios
-      .post(process.env.EVENT_BUS_URL + "events/", {
-        type: "IMAGE_UPLOADED",
-        data: {
-          userId: req.body.userId,
-          imageSize: buffer.length,
-        },
-      })
-      .then((res) => {
-        console.log("Event bus responded with status " + res.status);
-      })
-      .catch((err) => {
-        console.log("Event bus responded with error " + err);
-      });
+    .post(process.env.EVENT_BUS_URL + "events/", {
+    type: "IMAGE_UPLOADED",
+    data: {
+    userId: req.body.userId,
+    imageSize: buffer.length,
+    },
+    })
+    .then((res) => {
+    console.log("Event bus responded with status " + res.status);
+    })
+    .catch((err) => {
+    console.log("Event bus responded with error " + err);
+    });
 
     // console.log(response);
     res.status(201).json(response);
@@ -161,16 +161,16 @@ router.get("/images/:userId", async (req, res) => {
     };
 
     await axios
-      .post(process.env.LOG_SERV_URL, {
-        message: "StorageMgmtServ: Images retrieved successfully",
-        code: 200,
-      })
-      .then((res) => {
-        // console.log("Logs saved successfully");
-      })
-      .catch((err) => {
-        console.log("Error saving logs: " + err);
-      });
+    .post(process.env.LOG_SERV_URL, {
+    message: "StorageMgmtServ: Images retrieved successfully",
+    code: 200,
+    })
+    .then((res) => {
+    // console.log("Logs saved successfully");
+    })
+    .catch((err) => {
+    console.log("Error saving logs: " + err);
+    });
 
     res.status(200).json(response);
   } catch (error) {

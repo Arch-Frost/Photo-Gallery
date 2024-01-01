@@ -15,6 +15,7 @@ spec:
       containers:
         - name: storage-mgmt-serv
           image: us.gcr.io/photo-gallery-409812/storagemgmtserv
+          # image: itsmefrost/storagemgmtserv
 ---
 apiVersion: v1
 kind: Service

@@ -88,18 +88,6 @@ export default function Drive() {
 
   return (
     <div className="m-8">
-      {/* <div className='mb-5'>
-                <div className='flex'>
-                    <input
-                        className="block w-full mr-5 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50  focus:outline-none"
-                        id="file_input"
-                        type="file"
-                        accept=".png, .jpg, .jpeg"
-                        onChange={handleFileChange}
-                    />
-                </div>
-            </div> */}
-
       <div class="flex w-full items-center mb-8 justify-center bg-grey-lighter">
         <label class="flex flex-col w-full items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue hover:text-gray-700">
           <svg

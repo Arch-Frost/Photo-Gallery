@@ -6,10 +6,14 @@ import axios from 'axios'
 export default function UserStorage({updateUI}) {
     const [storage, setStorage] = useState('')
     const [percentage, setPercentage] = useState('')
+
     const auth = useAuth()
+  
+    const userId = localStorage.getItem('asad_auth')
+    const user = JSON.parse(userId)
 
     const fetchStorage = ()=>{
-        axios.get(`${process.env.REACT_APP_USAGE_SERV}/getUserStorage/${auth.user?._id}`)
+        axios.get(`${process.env.REACT_APP_USAGE_SERV}/getUserStorage/${user._id}`)
         .then((res)=>{
             setStorage(convertBytes(res.data?.data.usedSpace))
             setPercentage(getPercentageStorage(res.data?.data.usedSpace, 10485760).toFixed(2))

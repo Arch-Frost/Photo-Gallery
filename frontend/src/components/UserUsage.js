@@ -8,8 +8,13 @@ export default function UserUsage({updateUI}) {
     const [percentage, setPercentage] = useState('')
     const auth = useAuth()
 
+    //get user id from localstorage
+    const userId = localStorage.getItem('asad_auth')
+    //covert to json
+    const user = JSON.parse(userId)
+
     const fetchUsage = ()=>{
-        axios.get(`${process.env.REACT_APP_USAGE_SERV}/getUserStorage/${auth.user?._id}`)
+        axios.get(`${process.env.REACT_APP_USAGE_SERV}/getUserStorage/${user._id}`)
         .then((res)=>{
             setUsage(convertBytes(res.data?.data.dailyBandwidth))
             setPercentage(getPercentageStorage(res.data?.data.dailyBandwidth, 26214400).toFixed(2))

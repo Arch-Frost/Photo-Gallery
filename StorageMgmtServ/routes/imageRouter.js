@@ -22,12 +22,12 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
     // Check whether the user has enough space to upload the image
     const { canUpload, code } = await canUploadImage(userId, buffer.length);
 
-    if (!canUpload) {
+    if (!canUpload && code == 403) {
       response = {
         status: "fail",
         code: 400,
         message:
-          "User has exceeded the storage limit. Please try again tomorrow!",
+          "User has exceeded the storage limit. Please delete some images to upload new ones!",
       };
       await axios
         .post(process.env.LOG_SERV_URL, {
@@ -43,6 +43,28 @@ router.post("/images/upload", upload.single("image"), async (req, res) => {
       return res.status(400).json(response);
     }
 
+    if (!canUpload && code == 429) {
+      response = {
+        status: "fail",
+        code: 400,
+        message:
+          "User has exceeded the daily bandwidth limit. Please try again tommorrow.",
+      };
+      await axios
+        .post(process.env.LOG_SERV_URL, {
+          message:
+            "StorageMgmtServ: User has exceeded the daily bandwidth limit.",
+          code: 400,
+        })
+        .then((res) => {
+          // console.log("Logs saved successfully");
+        })
+        .catch((err) => {
+          console.log("Error saving logs: " + err);
+        });
+      return res.status(400).json(response);
+    }
+    
     // Create a new Image document
     const newImage = new Image({
       userId: userId, // Get the user id from the request body
@@ -160,17 +182,17 @@ router.get("/images/:userId", async (req, res) => {
       data: images,
     };
 
-    await axios
-    .post(process.env.LOG_SERV_URL, {
-    message: "StorageMgmtServ: Images retrieved successfully",
-    code: 200,
-    })
-    .then((res) => {
-    // console.log("Logs saved successfully");
-    })
-    .catch((err) => {
-    console.log("Error saving logs: " + err);
-    });
+    // await axios
+    // .post(process.env.LOG_SERV_URL, {
+    // message: "StorageMgmtServ: Images retrieved successfully",
+    // code: 200,
+    // })
+    // .then((res) => {
+    // // console.log("Logs saved successfully");
+    // })
+    // .catch((err) => {
+    // console.log("Error saving logs: " + err);
+    // });
 
     res.status(200).json(response);
   } catch (error) {
@@ -294,14 +316,23 @@ async function canUploadImage(userId, imageSize) {
       imageSize: imageSize,
     })
     .then((response) => {
-      return response.data;
+      if (response.data.code == 199) {
+        return { canUpload: true, code: 199, message: response.data.message };
+      } else {
+        return { canUpload: true, code: 200, message: response.data.message };
+      }
     })
     .catch((error) => {
       // console.log(error.data.code);
-      return { canUpload: false, code: 403 };
+      if (error.data.code == 403) {
+        return { canUpload: false, code: 403, message: error.data.message };
+      } else (error.data.code == 429)
+      {
+        return { canUpload: false, code: 429, message: error.data.message };
+      }
     });
 
-  return { canUpload: request.code === 200, code: request.code, message: request.message };
+  return request;
 }
 
 module.exports = router;

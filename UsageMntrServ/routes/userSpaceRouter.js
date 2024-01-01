@@ -56,8 +56,8 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
       );
       response = {
         status: "error",
-        code: 403,
-        message: "User has exceeded the daily bandwidth limit.",
+        code: 429,
+        message: "User has exceeded the daily bandwidth limit. Please try again tommorrow.",
         data: {
           userId,
           dailyBandwidth: currentUser.dailyBandwidth,
@@ -96,7 +96,7 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
       // You can implement your alert mechanism here (e.g., send an email, notification, etc.)
       response = {
         status: "warning",
-        code: 200,
+        code: 199,
         message: "Warning: User has exceeded 80% of the storage limit.",
         data: {
           userId,
@@ -104,21 +104,22 @@ router.post("/canUploadImage/:userId/", async (req, res) => {
           availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
         },
       };
-      res.status(200).json(response);
+      res.status(199).json(response);
       return;
+    } else {
+      response = {
+        status: "success",
+        code: 200,
+        message: "User has enough space to upload the image.",
+        data: {
+          userId,
+          usedSpace: currentUser.usedSpace,
+          availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
+        },
+      };
+      res.status(200).json(response);
     }
 
-    response = {
-      status: "success",
-      code: 200,
-      message: "User has enough space to upload the image.",
-      data: {
-        userId,
-        usedSpace: currentUser.usedSpace,
-        availableSpace: MAX_SPACE_LIMIT - currentUser.usedSpace,
-      },
-    };
-    res.status(200).json(response);
   } catch (error) {
     // Catch any errors
     console.error(error);
